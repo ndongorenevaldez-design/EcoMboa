@@ -1,0 +1,56 @@
+# ─────────────────────────────────────────────────────────────
+# EcoMboa — Python Dependencies
+# Generated for Python 3.14 / Django 5.x stack
+# ─────────────────────────────────────────────────────────────
+
+# Core Django
+Django>=5.1,<5.2
+django-stubs>=5.1.0
+
+# Database adapter (PostgreSQL)
+psycopg2-binary>=2.9.9
+
+# Authentication
+django-allauth>=64.0.0
+
+# REST Framework + JWT
+djangorestframework>=3.15.2
+djangorestframework-simplejwt>=5.3.1
+drf-spectacular>=0.27.2
+django-cors-headers>=4.4.0
+django-filter>=24.2
+
+# Real-time (WebSocket)
+channels>=4.1.0
+daphne>=4.1.2
+
+# Cloud Storage (Cloudinary)
+cloudinary>=1.41.0
+django-cloudinary-storage>=0.3.0
+
+# Image processing
+Pillow>=10.4.0
+
+# QR Code generation
+qrcode[pil]>=7.4.2
+
+# PDF generation
+reportlab>=4.2.2
+
+# Excel export
+openpyxl>=3.1.5
+
+# Environment variables
+python-decouple>=3.8
+
+# Background tasks / caching
+redis>=5.0.8
+celery>=5.4.0
+
+# Utilities
+python-slugify>=8.0.4
+django-extensions>=3.2.3
+
+# Development / test
+django-debug-toolbar>=4.4.6
+factory-boy>=3.3.1

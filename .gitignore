@@ -1,0 +1,83 @@
+# ─────────────────────────────────────────────────────────────
+# EcoMboa — .gitignore
+# ─────────────────────────────────────────────────────────────
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg-link
+.Python
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE / editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Distribution
+*.manifest
+*.spec
+
+# Node (if using TailwindCSS build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Migrations (keep migrations in VCS for team consistency)
+# Uncomment below only for personal projects:
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# Collected static
+collected_static/
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
