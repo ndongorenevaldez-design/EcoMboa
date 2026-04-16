@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Manage Report #{{ report.id }} | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <a class="pill" href="{% url 'reports_admin:list' %}">Back to queue</a>
+    <h1 style="margin:.8rem 0 .2rem;">Manage report #{{ report.id }}</h1>
+    <p class="muted" style="margin:0;">Citizen: {{ report.citizen.email }} • {{ report.district }} / {{ report.neighborhood }}</p>
+</section>
+
+<section class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <h3 style="margin:.2rem 0;">Report info</h3>
+        {% for field in report_form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <h3 style="margin:.2rem 0;">Collector assignment</h3>
+        {% for field in assign_form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button class="btn" type="submit">Save assignment</button>
+    </form>
+
+    <div>
+        <h3 style="margin-top:0;">Current mission</h3>
+        {% if mission %}
+            <p><strong>Status:</strong> {{ mission.get_status_display }}</p>
+            <p><strong>Collector:</strong> {{ mission.collector.get_full_name|default:mission.collector.username }}</p>
+            <p><strong>Center:</strong> {{ mission.destination_center|default:"Not set" }}</p>
+            <p><strong>Assigned:</strong> {{ mission.assigned_at|date:"M d, Y H:i" }}</p>
+            <p><strong>Notes:</strong> {{ mission.notes|default:"-" }}</p>
+        {% else %}
+            <p class="muted">No mission exists yet. Assign a collector to create one.</p>
+        {% endif %}
+        <hr style="border:none;border-top:1px solid #dceadf;margin:14px 0;">
+        <a class="pill" href="{% url 'reports:detail' report.pk %}">Open timeline view</a>
+    </div>
+</section>
+{% endblock %}

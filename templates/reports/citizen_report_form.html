@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Submit Report | EcoMboa{% endblock %}
+{% block extra_head %}
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+/>
+<style>
+    #report-map {
+        min-height: 380px;
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid #d2e6d9;
+    }
+    .report-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 14px;
+    }
+    @media (max-width: 920px) { .report-grid { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+{% block content %}
+<section class="card">
+    <h1 style="margin:0;">Report recyclable waste</h1>
+    <p class="muted" style="margin:.35rem 0 0;">Drop a pin on the map, add a photo, and submit for collector assignment.</p>
+</section>
+
+<section class="card report-grid">
+    <div>
+        <h3 style="margin-top:0;">1. Select exact location</h3>
+        <p class="muted">Click the map to place the waste location pin.</p>
+        <div id="report-map"></div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="form-grid">
+        {% csrf_token %}
+        <h3 style="margin:.2rem 0;">2. Add details</h3>
+        {% for field in form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<small class="helptext">{{ field.help_text }}</small>{% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button class="btn" type="submit">Submit report</button>
+    </form>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    const map = L.map("report-map").setView([3.8480, 11.5021], 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const latInput = document.getElementById("id_latitude");
+    const lngInput = document.getElementById("id_longitude");
+    let marker = null;
+
+    function setMarker(lat, lng) {
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker([lat, lng]).addTo(map);
+        }
+        latInput.value = Number(lat).toFixed(6);
+        lngInput.value = Number(lng).toFixed(6);
+    }
+
+    map.on("click", (e) => setMarker(e.latlng.lat, e.latlng.lng));
+
+    if (latInput.value && lngInput.value) {
+        setMarker(latInput.value, lngInput.value);
+        map.setView([latInput.value, lngInput.value], 15);
+    }
+</script>
+{% endblock %}

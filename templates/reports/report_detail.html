@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Report #{{ report.id }} | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Report #{{ report.id }}</h1>
+            <p class="muted" style="margin:.35rem 0 0;">
+                {{ report.get_waste_type_display }} • {{ report.district }} / {{ report.neighborhood }}
+            </p>
+        </div>
+        <span class="pill">{{ report.get_status_display }}</span>
+    </div>
+</section>
+
+<section class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div>
+        <h3 style="margin-top:0;">Details</h3>
+        <p><strong>Address:</strong> {{ report.text_address }}</p>
+        <p><strong>Coordinates:</strong> {{ report.latitude }}, {{ report.longitude }}</p>
+        <p><strong>Estimated weight:</strong> {{ report.estimated_quantity_kg }} kg</p>
+        <p><strong>Urgent:</strong> {{ report.is_urgent|yesno:"Yes,No" }}</p>
+        <p><strong>Description:</strong><br>{{ report.description }}</p>
+        {% if report.photo %}
+            <img src="{{ report.photo.url }}" alt="Waste report photo" style="max-width:100%;border-radius:12px;border:1px solid #dceadf;">
+        {% endif %}
+    </div>
+    <div>
+        <h3 style="margin-top:0;">Status timeline</h3>
+        <ol style="margin:0;padding-left:18px;">
+            {% for event in timeline %}
+                <li style="margin-bottom:10px;">
+                    <strong>{{ event.title }}</strong>
+                    <div class="muted">{{ event.at|date:"M d, Y H:i" }}</div>
+                    <div>{{ event.detail }}</div>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+{% endblock %}

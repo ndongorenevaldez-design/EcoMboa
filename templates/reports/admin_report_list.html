@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Manage Waste Reports | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <h1 style="margin-top:0;">Waste reports queue</h1>
+    <form method="get" style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end;">
+        <div>
+            <label class="field-label">Search</label>
+            <input class="form-control" type="text" name="q" value="{{ query }}" placeholder="citizen, district, neighborhood">
+        </div>
+        <div>
+            <label class="field-label">Status</label>
+            <select class="form-control" name="status">
+                <option value="">All</option>
+                {% for value,label in reports.model.STATUSES %}
+                    <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="field-label">Urgency</label>
+            <select class="form-control" name="urgent">
+                <option value="">All</option>
+                <option value="yes" {% if urgency == 'yes' %}selected{% endif %}>Urgent only</option>
+            </select>
+        </div>
+        <button class="btn" type="submit">Filter</button>
+    </form>
+</section>
+
+<section class="card" style="overflow:auto;">
+    <table style="width:100%;border-collapse:collapse;min-width:900px;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                <th style="padding:10px 8px;">Report</th>
+                <th style="padding:10px 8px;">Citizen</th>
+                <th style="padding:10px 8px;">Area</th>
+                <th style="padding:10px 8px;">Status</th>
+                <th style="padding:10px 8px;">Urgent</th>
+                <th style="padding:10px 8px;">Collector</th>
+                <th style="padding:10px 8px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+                {% with mission=report.mission_set.first %}
+                <tr style="border-bottom:1px solid #eef4f0;">
+                    <td style="padding:10px 8px;">#{{ report.id }} • {{ report.get_waste_type_display }}</td>
+                    <td style="padding:10px 8px;">{{ report.citizen.email }}</td>
+                    <td style="padding:10px 8px;">{{ report.district }} / {{ report.neighborhood }}</td>
+                    <td style="padding:10px 8px;">{{ report.get_status_display }}</td>
+                    <td style="padding:10px 8px;">{{ report.is_urgent|yesno:"Yes,No" }}</td>
+                    <td style="padding:10px 8px;">
+                        {% if mission and mission.collector %}
+                            {{ mission.collector.get_full_name|default:mission.collector.username }}
+                        {% else %}
+                            <span class="muted">Unassigned</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:10px 8px;">
+                        <a class="btn" href="{% url 'reports_admin:update' report.pk %}">Manage</a>
+                    </td>
+                </tr>
+                {% endwith %}
+            {% empty %}
+                <tr><td colspan="7" style="padding:12px;" class="muted">No reports found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Waste Reports | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">My waste reports</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Track statuses from submission to collection and processing.</p>
+        </div>
+        <a class="btn" href="{% url 'reports:create' %}">+ Submit new report</a>
+    </div>
+</section>
+
+<section class="card">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;">
+        {% for report in reports %}
+            {% with mission=report.mission_set.first %}
+            <article style="border:1px solid #d6e7dc;border-radius:14px;padding:12px;background:#fcfffd;">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+                    <strong>Report #{{ report.id }}</strong>
+                    <span class="pill">{{ report.get_status_display }}</span>
+                </div>
+                <p class="muted" style="margin:.4rem 0;">{{ report.district }} / {{ report.neighborhood }}</p>
+                <p style="margin:.2rem 0;">Type: {{ report.get_waste_type_display }} • {{ report.estimated_quantity_kg }} kg</p>
+                {% if mission and mission.collector %}
+                    <p class="muted" style="margin:.2rem 0;">Collector: {{ mission.collector.get_full_name|default:mission.collector.username }}</p>
+                {% endif %}
+                <p class="muted" style="margin:.2rem 0 .8rem;">Submitted {{ report.created_at|date:"M d, Y H:i" }}</p>
+                <a class="btn" href="{% url 'reports:detail' report.pk %}">View timeline</a>
+            </article>
+            {% endwith %}
+        {% empty %}
+            <p class="muted">No reports yet. Submit your first report to get started.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
