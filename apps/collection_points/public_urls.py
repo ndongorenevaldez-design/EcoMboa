@@ -1,9 +1,8 @@
-from django.http import HttpResponse
 from django.urls import path
+from django.views.generic import TemplateView
 
 app_name = "public"
 
 urlpatterns = [
-    path("", lambda request: HttpResponse("EcoMboa home placeholder."), name="home"),
+    path("", TemplateView.as_view(template_name="public/home.html"), name="home"),
 ]
-

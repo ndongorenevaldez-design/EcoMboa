@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Server Error | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:620px;margin:0 auto;text-align:center;">
+    <h1 style="margin-top:0;">500 - Server error</h1>
+    <p class="muted">Something unexpected happened. Please retry in a moment.</p>
+    <a class="btn" href="{% url 'public:home' %}">Back to home</a>
+</section>
+{% endblock %}

@@ -196,10 +196,14 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Set to 'none' in dev
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_ADAPTER = 'apps.accounts.adapters.AccountAdapter'
-ACCOUNT_FORMS = {'signup': 'apps.accounts.forms.CustomSignupForm'}
+ACCOUNT_FORMS = {
+    'login': 'apps.accounts.forms.CustomLoginForm',
+    'signup': 'apps.accounts.forms.CustomSignupForm',
+    'reset_password': 'apps.accounts.forms.CustomResetPasswordForm',
+}
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/redirect/'

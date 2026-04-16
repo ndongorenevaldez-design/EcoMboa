@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}EcoMboa | Smart Recycling{% endblock %}
+{% block content %}
+<section class="card">
+    <h1 style="margin:0 0 10px;font-size:clamp(1.8rem,4vw,2.6rem);">Recycle better in Yaounde.</h1>
+    <p class="muted" style="max-width:72ch;">
+        EcoMboa connects citizens, collectors, suppliers, sorting centers, and buyers in one clean flow.
+        Report waste fast, track mission progress, and get routed to the right workspace based on your role.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
+        <a href="{% url 'account_signup' %}" class="btn">Create an account</a>
+        <a href="{% url 'account_login' %}" class="pill">I already have an account</a>
+    </div>
+</section>
+
+<section class="card">
+    <h2 style="margin-top:0;">Role spaces</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
+        <div class="pill">Citizen reporting</div>
+        <div class="pill">Supplier payouts</div>
+        <div class="pill">Collector missions</div>
+        <div class="pill">Sorting stock desk</div>
+        <div class="pill">Buyer orders</div>
+        <div class="pill">Partner impact reports</div>
+    </div>
+</section>
+{% endblock %}

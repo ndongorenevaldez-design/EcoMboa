@@ -1,22 +1,51 @@
-from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+
+from .forms import ProfileUpdateForm
 
 
-def role_redirect(request):
-    return HttpResponse("Role redirect placeholder.")
+ROLE_REDIRECT_MAP = {
+    "citizen": "reports:index",
+    "seller": "suppliers:index",
+    "collector": "missions:index",
+    "center": "sorting_center:index",
+    "buyer": "buyers:index",
+    "partner": "partners:index",
+    "admin": "dashboard:index",
+}
 
 
-def profile_view(request):
-    return HttpResponse("Profile placeholder.")
+@login_required
+def role_redirect(request: HttpRequest) -> HttpResponse:
+    route_name = ROLE_REDIRECT_MAP.get(getattr(request.user, "role", ""), "accounts:profile")
+    return redirect(reverse(route_name))
+
+
+@login_required
+def profile_view(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile was updated successfully.")
+            return redirect("accounts:profile")
+        messages.error(request, "Please correct the highlighted fields.")
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+
+    return render(request, "accounts/profile.html", {"form": form})
 
 
 def error_403(request, exception=None):
-    return HttpResponse("Forbidden (403)", status=403)
+    return render(request, "errors/403.html", status=403)
 
 
 def error_404(request, exception=None):
-    return HttpResponse("Not Found (404)", status=404)
+    return render(request, "errors/404.html", status=404)
 
 
 def error_500(request):
-    return HttpResponse("Server Error (500)", status=500)
-
+    return render(request, "errors/500.html", status=500)

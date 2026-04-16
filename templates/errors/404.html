@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:620px;margin:0 auto;text-align:center;">
+    <h1 style="margin-top:0;">404 - Page not found</h1>
+    <p class="muted">The page may have moved or the link may be outdated.</p>
+    <a class="btn" href="{% url 'public:home' %}">Back to home</a>
+</section>
+{% endblock %}

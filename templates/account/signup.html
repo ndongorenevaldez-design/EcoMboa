@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Create Account | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:760px;margin:0 auto;">
+    <h1 style="margin-top:0;">Create your EcoMboa account</h1>
+    <p class="muted">Choose your role so we can send you to the right dashboard after sign-in.</p>
+    <form method="post" action="{% url 'account_signup' %}" enctype="multipart/form-data" class="form-grid">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+            {% for field in form %}
+                <div>
+                    <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<small class="helptext">{{ field.help_text }}</small>{% endif %}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn" type="submit">Create account</button>
+    </form>
+    <p class="muted" style="margin:12px 0 0;">
+        Already have an account?
+        <a href="{% url 'account_login' %}">Sign in</a>.
+    </p>
+</section>
+{% endblock %}

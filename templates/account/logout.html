@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Sign Out | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:520px;margin:0 auto;">
+    <h1 style="margin-top:0;">Sign out</h1>
+    <p class="muted">Are you sure you want to end your current session?</p>
+    <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button class="btn" type="submit">Yes, sign me out</button>
+    </form>
+</section>
+{% endblock %}
