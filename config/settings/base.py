@@ -26,6 +26,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv(
 # APPLICATION DEFINITION
 # ─────────────────────────────────────────────────────────────────────────────
 DJANGO_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +51,6 @@ THIRD_PARTY_APPS = [
     'drf_spectacular',
     # Websockets
     'channels',
-    'daphne',
     # Cloud storage
     'cloudinary_storage',
     'cloudinary',
@@ -193,12 +193,10 @@ SITE_ID = config('SITE_ID', default=1, cast=int)
 
 # Allauth settings
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Set to 'none' in dev
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'apps.accounts.adapters.AccountAdapter'
 ACCOUNT_FORMS = {'signup': 'apps.accounts.forms.CustomSignupForm'}
