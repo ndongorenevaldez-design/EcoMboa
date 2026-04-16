@@ -41,6 +41,7 @@ urlpatterns = [
     # ── EcoMboa Admin Space ───────────────────────────────────────────────────
     path('admin-eco/', include('apps.dashboard.urls', namespace='dashboard')),
     path('admin-eco/finances/', include('apps.finances.urls', namespace='finances')),
+    path('admin-eco/collection-points/', include('apps.collection_points.urls', namespace='collection_points')),
 
     # ── Accounts (profile, redirect) ──────────────────────────────────────────
     path('accounts/', include('apps.accounts.urls', namespace='accounts')),

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Delete Collection Point | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:620px;margin:0 auto;">
+    <h1 style="margin-top:0;">Delete collection point</h1>
+    <p>Are you sure you want to delete <strong>{{ object.name }}</strong>?</p>
+    <p class="muted">This action cannot be undone.</p>
+    <form method="post" style="display:flex;gap:10px;flex-wrap:wrap;">
+        {% csrf_token %}
+        <button class="btn" type="submit" style="background:linear-gradient(120deg,#a42f2f,#bf4343);">Delete permanently</button>
+        <a class="pill" href="{% url 'collection_points:admin_list' %}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

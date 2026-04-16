@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Collection Points | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div>
+            <h1 style="margin:0;">Collection points</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Find nearby paid and free drop-off points in Yaounde.</p>
+        </div>
+        <form method="get" style="display:flex;gap:8px;min-width:min(100%,390px);">
+            <input class="form-control" type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by name, district, neighborhood">
+            <button class="btn" type="submit">Search</button>
+        </form>
+    </div>
+</section>
+
+<section class="card">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;">
+        {% for point in points %}
+            <article style="border:1px solid #d6e7dc;border-radius:14px;padding:14px;background:#fbfffd;">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+                    <h3 style="margin:0;">{{ point.name }}</h3>
+                    <span class="pill">{{ point.get_point_type_display }}</span>
+                </div>
+                <p class="muted" style="margin:.4rem 0 .6rem;">{{ point.district }} / {{ point.neighborhood }}</p>
+                <p style="margin:0 0 .55rem;">{{ point.address|truncatechars:90 }}</p>
+                <p class="muted" style="margin:0 0 .8rem;">Fill level: <strong>{{ point.fill_level }}%</strong></p>
+                <a class="btn" href="{% url 'public:point_detail' point.pk %}">View details</a>
+            </article>
+        {% empty %}
+            <p class="muted">No active collection points match this filter yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+            {% if page_obj.has_previous %}
+                <a class="pill" href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="pill">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a class="pill" href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
