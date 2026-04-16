@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Collector Supplier Transactions | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Supplier transactions</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Collector ledger with generated lot QR and payment refs.</p>
+        </div>
+        <a class="btn" href="{% url 'suppliers:collector_new_transaction' %}">+ New transaction</a>
+    </div>
+</section>
+
+<section class="card" style="overflow:auto;">
+    <table style="width:100%;border-collapse:collapse;min-width:980px;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                <th style="padding:10px 8px;">Date</th>
+                <th style="padding:10px 8px;">Supplier</th>
+                <th style="padding:10px 8px;">Material</th>
+                <th style="padding:10px 8px;">Weight</th>
+                <th style="padding:10px 8px;">Total</th>
+                <th style="padding:10px 8px;">Payment</th>
+                <th style="padding:10px 8px;">Reference</th>
+                <th style="padding:10px 8px;">Lot</th>
+                <th style="padding:10px 8px;">QR</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tx in transactions %}
+                <tr style="border-bottom:1px solid #eef4f0;">
+                    <td style="padding:10px 8px;">{{ tx.transacted_at|date:"M d, Y H:i" }}</td>
+                    <td style="padding:10px 8px;">{{ tx.supplier.business_name|default:tx.supplier.user.username }}</td>
+                    <td style="padding:10px 8px;">{{ tx.get_material_type_display }}</td>
+                    <td style="padding:10px 8px;">{{ tx.weight_kg }} kg</td>
+                    <td style="padding:10px 8px;">{{ tx.total_amount }} FCFA</td>
+                    <td style="padding:10px 8px;">{{ tx.get_payment_status_display }}</td>
+                    <td style="padding:10px 8px;">{{ tx.mobile_money_reference|default:"-" }}</td>
+                    <td style="padding:10px 8px;">{{ tx.lot_qr_code|default:"-" }}</td>
+                    <td style="padding:10px 8px;">
+                        {% if tx.qr_code_image %}
+                            <a href="{{ tx.qr_code_image.url }}" target="_blank" rel="noopener">View QR</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="9" class="muted" style="padding:12px;">No transactions recorded yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

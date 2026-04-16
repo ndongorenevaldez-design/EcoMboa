@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Supplier Approvals | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <h1 style="margin-top:0;">Supplier approvals</h1>
+    <p class="muted">Approve eligible supplier registrations before collector transactions.</p>
+</section>
+
+<section class="card" style="overflow:auto;">
+    <table style="width:100%;border-collapse:collapse;min-width:860px;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                <th style="padding:10px 8px;">Supplier</th>
+                <th style="padding:10px 8px;">User</th>
+                <th style="padding:10px 8px;">Operator</th>
+                <th style="padding:10px 8px;">Number</th>
+                <th style="padding:10px 8px;">Status</th>
+                <th style="padding:10px 8px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in profiles %}
+                <tr style="border-bottom:1px solid #eef4f0;">
+                    <td style="padding:10px 8px;">{{ profile.business_name|default:"-" }}</td>
+                    <td style="padding:10px 8px;">{{ profile.user.email }}</td>
+                    <td style="padding:10px 8px;">{{ profile.get_preferred_mobile_money_operator_display|default:"-" }}</td>
+                    <td style="padding:10px 8px;">{{ profile.preferred_mobile_money_number|default:"-" }}</td>
+                    <td style="padding:10px 8px;">
+                        {% if profile.is_approved %}
+                            <span class="pill">Approved</span>
+                        {% else %}
+                            <span class="pill">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:10px 8px;">
+                        {% if not profile.is_approved %}
+                            <a class="btn" href="{% url 'suppliers_admin:approve' profile.pk %}">Approve</a>
+                        {% else %}
+                            <span class="muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6" class="muted" style="padding:12px;">No supplier profiles found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

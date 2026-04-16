@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Confirm Mission Collection | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:760px;margin:0 auto;">
+    <h1 style="margin-top:0;">Collection confirmation for mission #{{ mission.id }}</h1>
+    <p class="muted">Upload proof photo and measured weight. Status will move to Collected.</p>
+    <form method="post" enctype="multipart/form-data" class="form-grid">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" type="submit">Confirm collection</button>
+            <a class="pill" href="{% url 'missions:detail' mission.pk %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

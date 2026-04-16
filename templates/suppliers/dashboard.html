@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Supplier Dashboard | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Supplier dashboard</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Manage your registration and track all collection transactions.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a class="pill" href="{% url 'suppliers:profile' %}">Edit profile</a>
+            <a class="pill" href="{% url 'suppliers:history' %}">Full history</a>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    {% if profile %}
+        <h3 style="margin-top:0;">Profile status</h3>
+        <p><strong>Business:</strong> {{ profile.business_name|default:"-" }}</p>
+        <p><strong>Approval:</strong>
+            {% if profile.is_approved %}
+                <span class="pill">Approved</span>
+            {% else %}
+                <span class="pill">Pending approval</span>
+            {% endif %}
+        </p>
+    {% else %}
+        <p class="muted">No supplier profile yet.</p>
+        <a class="btn" href="{% url 'suppliers:profile' %}">Create supplier profile</a>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h3 style="margin-top:0;">Latest transactions</h3>
+    <div style="overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:760px;">
+            <thead>
+                <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                    <th style="padding:10px 8px;">Date</th>
+                    <th style="padding:10px 8px;">Material</th>
+                    <th style="padding:10px 8px;">Weight</th>
+                    <th style="padding:10px 8px;">Amount</th>
+                    <th style="padding:10px 8px;">Payment</th>
+                    <th style="padding:10px 8px;">Reference</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                    <tr style="border-bottom:1px solid #eef4f0;">
+                        <td style="padding:10px 8px;">{{ tx.transacted_at|date:"M d, Y H:i" }}</td>
+                        <td style="padding:10px 8px;">{{ tx.get_material_type_display }}</td>
+                        <td style="padding:10px 8px;">{{ tx.weight_kg }} kg</td>
+                        <td style="padding:10px 8px;">{{ tx.total_amount }} FCFA</td>
+                        <td style="padding:10px 8px;">{{ tx.get_payment_status_display }}</td>
+                        <td style="padding:10px 8px;">{{ tx.mobile_money_reference|default:"-" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="muted" style="padding:12px;">No transactions yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

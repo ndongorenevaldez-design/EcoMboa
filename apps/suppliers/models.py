@@ -62,8 +62,8 @@ class SupplierTransaction(models.Model):
         max_length=20, choices=PAYMENT_STATUSES, default="pending"
     )
     lot_qr_code = models.CharField(max_length=120, blank=True, unique=True, null=True)
+    qr_code_image = models.ImageField(upload_to="suppliers/qr_codes/", blank=True)
     transacted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"SupplierTransaction #{self.pk} - {self.material_type}"
-

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Missions | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Mission queue</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Track assignments, progress, and delivery states.</p>
+        </div>
+        <a class="pill" href="{% url 'missions:dashboard' %}">Open today's map</a>
+    </div>
+</section>
+
+<section class="card" style="overflow:auto;">
+    <table style="width:100%;border-collapse:collapse;min-width:860px;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                <th style="padding:10px 8px;">Mission</th>
+                <th style="padding:10px 8px;">Source</th>
+                <th style="padding:10px 8px;">Collector</th>
+                <th style="padding:10px 8px;">Center</th>
+                <th style="padding:10px 8px;">Status</th>
+                <th style="padding:10px 8px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mission in missions %}
+                <tr style="border-bottom:1px solid #eef4f0;">
+                    <td style="padding:10px 8px;">#{{ mission.id }}</td>
+                    <td style="padding:10px 8px;">{{ mission.get_source_type_display }}</td>
+                    <td style="padding:10px 8px;">{{ mission.collector.get_full_name|default:mission.collector.username|default:"-" }}</td>
+                    <td style="padding:10px 8px;">{{ mission.destination_center|default:"-" }}</td>
+                    <td style="padding:10px 8px;">{{ mission.get_status_display }}</td>
+                    <td style="padding:10px 8px;"><a class="btn" href="{% url 'missions:detail' mission.pk %}">Open</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6" class="muted" style="padding:12px;">No missions available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

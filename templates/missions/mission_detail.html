@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Mission #{{ mission.id }} | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Mission #{{ mission.id }}</h1>
+            <p class="muted" style="margin:.35rem 0 0;">{{ mission.get_source_type_display }} • {{ mission.get_status_display }}</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a class="pill" href="{% url 'missions:status_update' mission.pk %}">Update status</a>
+            <a class="pill" href="{% url 'missions:confirm' mission.pk %}">Confirm collection</a>
+        </div>
+    </div>
+</section>
+
+<section class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div>
+        <h3 style="margin-top:0;">Mission info</h3>
+        <p><strong>Collector:</strong> {{ mission.collector.get_full_name|default:mission.collector.username|default:"-" }}</p>
+        <p><strong>Destination center:</strong> {{ mission.destination_center|default:"-" }}</p>
+        <p><strong>Assigned at:</strong> {{ mission.assigned_at|date:"M d, Y H:i" }}</p>
+        <p><strong>Collected at:</strong> {{ mission.collected_at|date:"M d, Y H:i"|default:"-" }}</p>
+        <p><strong>Delivered at:</strong> {{ mission.delivered_at|date:"M d, Y H:i"|default:"-" }}</p>
+        <p><strong>Notes:</strong><br>{{ mission.notes|default:"-" }}</p>
+        {% if mission.collected_weight_kg %}
+            <p><strong>Collected weight:</strong> {{ mission.collected_weight_kg }} kg</p>
+        {% endif %}
+        {% if mission.confirmation_photo %}
+            <img src="{{ mission.confirmation_photo.url }}" alt="Confirmation photo" style="max-width:100%;border-radius:12px;border:1px solid #dceadf;">
+        {% endif %}
+    </div>
+    <div>
+        <h3 style="margin-top:0;">Location</h3>
+        {% if mission.report %}
+            <p><strong>Citizen address:</strong> {{ mission.report.text_address }}</p>
+            <p class="muted">{{ mission.report.district }} / {{ mission.report.neighborhood }}</p>
+            <p class="muted">Coordinates: {{ mission.report.latitude }}, {{ mission.report.longitude }}</p>
+        {% elif mission.collection_point %}
+            <p><strong>Collection point:</strong> {{ mission.collection_point.name }}</p>
+            <p class="muted">{{ mission.collection_point.address }}</p>
+            <p class="muted">Coordinates: {{ mission.collection_point.latitude }}, {{ mission.collection_point.longitude }}</p>
+        {% else %}
+            <p class="muted">No geolocation source attached.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

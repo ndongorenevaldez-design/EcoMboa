@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Collector Dashboard | EcoMboa{% endblock %}
+{% block extra_head %}
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+/>
+<style>
+    .dash-grid { display:grid; grid-template-columns: minmax(280px,340px) 1fr; gap:12px; }
+    #mission-map { min-height:560px; width:100%; border:1px solid #d3e6da; border-radius:14px; }
+    .mission-side { border:1px solid #d6e8dd; border-radius:14px; padding:12px; background:#fcfffd; max-height:560px; overflow:auto; }
+    .mission-card { border:1px solid #dcebe1; border-radius:12px; padding:10px; margin-bottom:10px; background:white; cursor:pointer; }
+    .mission-card:hover { background:#f2fff7; }
+    @media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } .mission-side { max-height:260px; } #mission-map { min-height:420px; } }
+</style>
+{% endblock %}
+{% block content %}
+<section class="card">
+    <h1 style="margin:0;">Today's mission map</h1>
+    <p class="muted" style="margin:.35rem 0 0;">Live geospatial view for active and assigned missions.</p>
+</section>
+
+<section class="card dash-grid">
+    <aside class="mission-side" id="mission-list">
+        {% for mission in missions %}
+            <article class="mission-card" data-id="{{ mission.id }}">
+                <strong>Mission #{{ mission.id }}</strong><br>
+                <span class="muted">{{ mission.get_source_type_display }} • {{ mission.get_status_display }}</span><br>
+                <a href="{% url 'missions:detail' mission.pk %}">Open details</a>
+            </article>
+        {% empty %}
+            <p class="muted">No missions for today.</p>
+        {% endfor %}
+    </aside>
+    <div id="mission-map"></div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    const map = L.map("mission-map").setView([3.8480, 11.5021], 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const items = {{ map_items_json|safe }};
+    const markers = {};
+    const bounds = [];
+    items.forEach((item) => {
+        const marker = L.marker([item.lat, item.lng]).addTo(map);
+        marker.bindPopup(`<strong>Mission #${item.id}</strong><br>${item.source}<br>${item.status}<br><small>${item.label}</small>`);
+        markers[String(item.id)] = marker;
+        bounds.push([item.lat, item.lng]);
+    });
+    if (bounds.length) {
+        map.fitBounds(bounds, { padding: [28, 28] });
+    }
+    document.querySelectorAll(".mission-card").forEach((el) => {
+        el.addEventListener("click", () => {
+            const marker = markers[el.dataset.id];
+            if (marker) {
+                map.setView(marker.getLatLng(), 15);
+                marker.openPopup();
+            }
+        });
+    });
+</script>
+{% endblock %}
