@@ -54,3 +54,5 @@ django-extensions>=3.2.3
 # Development / test
 django-debug-toolbar>=4.4.6
 factory-boy>=3.3.1
+dj-database-url>=2.1.0
+channels-redis>=4.2.0
