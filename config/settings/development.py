@@ -17,12 +17,17 @@ ALLOWED_HOSTS = ['*']
 # DATABASE — SQLite for quick local setup, PostgreSQL recommended
 # ─────────────────────────────────────────────────────────────────────────────
 DATABASE_URL = config('DATABASE_URL', default='')
+USE_SQLITE = config('USE_SQLITE', default=True, cast=bool)
 
-if DATABASE_URL:
+if DATABASE_URL and not USE_SQLITE:
     import dj_database_url  # type: ignore
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
+    try:
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        }
+    except Exception:
+        # Fall back to SQLite if DATABASE_URL is malformed locally.
+        pass
 # else: base.py SQLite default is used
 
 # ─────────────────────────────────────────────────────────────────────────────
