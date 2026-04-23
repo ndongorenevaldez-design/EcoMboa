@@ -30,7 +30,11 @@
 
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button class="btn" type="submit">Save sale</button>
-            <a class="pill" href="{% url 'sales:index' %}">Cancel</a>
+            {% if is_buyer_context %}
+                <a class="pill" href="{% url 'buyer_sales:index' %}">Cancel</a>
+            {% else %}
+                <a class="pill" href="{% url 'sales:index' %}">Cancel</a>
+            {% endif %}
         </div>
     </form>
 </section>

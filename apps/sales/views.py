@@ -18,7 +18,14 @@ def sale_list(request):
         buyer = get_object_or_404(BuyerProfile, user=request.user)
         sales = sales.filter(buyer=buyer)
     sales = sales.order_by("-created_at")
-    return render(request, "sales/sale_list.html", {"sales": sales})
+    return render(
+        request,
+        "sales/sale_list.html",
+        {
+            "sales": sales,
+            "is_buyer_context": request.user.role == "buyer",
+        },
+    )
 
 
 @login_required
@@ -29,7 +36,10 @@ def sale_create(request):
         buyer_initial = get_object_or_404(BuyerProfile, user=request.user)
 
     if request.method == "POST":
-        form = SaleForm(request.POST)
+        post_data = request.POST.copy()
+        if buyer_initial:
+            post_data["buyer"] = str(buyer_initial.pk)
+        form = SaleForm(post_data)
         formset = SaleLineFormSet(request.POST, prefix="lines")
         if form.is_valid() and formset.is_valid():
             sale = form.save(commit=False)
@@ -50,6 +60,8 @@ def sale_create(request):
             generate_certificate_pdf(sale)
             sale.save(update_fields=["invoice_pdf", "recycling_certificate_pdf", "updated_at"])
             messages.success(request, "Sale created successfully.")
+            if request.user.role == "buyer":
+                return redirect("buyer_sales:detail", pk=sale.pk)
             return redirect("sales:detail", pk=sale.pk)
         messages.error(request, "Please correct the highlighted fields.")
     else:
@@ -58,7 +70,15 @@ def sale_create(request):
         if request.user.role == "buyer":
             form.fields["buyer"].disabled = True
         formset = SaleLineFormSet(prefix="lines")
-    return render(request, "sales/sale_form.html", {"form": form, "formset": formset})
+    return render(
+        request,
+        "sales/sale_form.html",
+        {
+            "form": form,
+            "formset": formset,
+            "is_buyer_context": request.user.role == "buyer",
+        },
+    )
 
 
 @login_required
@@ -69,6 +89,9 @@ def sale_detail(request, pk):
         pk=pk,
     )
     if request.user.role == "buyer" and sale.buyer.user_id != request.user.id:
-        return redirect("sales:index")
-    return render(request, "sales/sale_detail.html", {"sale": sale})
-
+        return redirect("buyer_sales:index")
+    return render(
+        request,
+        "sales/sale_detail.html",
+        {"sale": sale, "is_buyer_context": request.user.role == "buyer"},
+    )

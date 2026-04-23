@@ -7,7 +7,11 @@
             <h1 style="margin:0;">Sales and order requests</h1>
             <p class="muted" style="margin:.35rem 0 0;">Manage buyer requests, center-side sale creation, and generated documents.</p>
         </div>
-        <a class="btn" href="{% url 'sales:create' %}">+ New sale</a>
+        {% if is_buyer_context %}
+            <a class="btn" href="{% url 'buyer_sales:create' %}">+ New sale</a>
+        {% else %}
+            <a class="btn" href="{% url 'sales:create' %}">+ New sale</a>
+        {% endif %}
     </div>
 </section>
 
@@ -31,7 +35,13 @@
                     <td style="padding:10px 8px;">{{ sale.sorting_center.name }}</td>
                     <td style="padding:10px 8px;">{{ sale.get_status_display }}</td>
                     <td style="padding:10px 8px;">{{ sale.total_amount }} FCFA</td>
-                    <td style="padding:10px 8px;"><a class="pill" href="{% url 'sales:detail' sale.pk %}">Open</a></td>
+                    <td style="padding:10px 8px;">
+                        {% if is_buyer_context %}
+                            <a class="pill" href="{% url 'buyer_sales:detail' sale.pk %}">Open</a>
+                        {% else %}
+                            <a class="pill" href="{% url 'sales:detail' sale.pk %}">Open</a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% empty %}
                 <tr><td colspan="6" class="muted" style="padding:12px;">No sales yet.</td></tr>
