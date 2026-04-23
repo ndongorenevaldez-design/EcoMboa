@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Stock Entry | EcoMboa{% endblock %}
+{% block content %}
+<section class="card" style="max-width:760px;margin:0 auto;">
+    <h1 style="margin-top:0;">Create stock entry</h1>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" type="submit">Save stock entry</button>
+            <a class="pill" href="{% url 'sorting_center:index' %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -26,9 +27,7 @@ def update_stock_from_reception(sender, instance, created, **kwargs):
 @receiver(post_save, sender=MaterialStock)
 def create_low_stock_alert(sender, instance, **kwargs):
     if instance.low_stock_threshold_kg and instance.quantity_kg <= instance.low_stock_threshold_kg:
-        admins = instance.sorting_center.partner_contracts.model._meta.apps.get_model(
-            "accounts", "User"
-        ).objects.filter(role="admin", is_active=True)
+        admins = get_user_model().objects.filter(role="admin", is_active=True)
         for admin in admins:
             Notification.objects.create(
                 recipient=admin,
@@ -44,4 +43,3 @@ def create_low_stock_alert(sender, instance, **kwargs):
                     "quality_grade": instance.quality_grade,
                 },
             )
-

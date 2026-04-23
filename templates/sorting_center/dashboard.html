@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Sorting Center Dashboard | EcoMboa{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Sorting center dashboard</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Monitor receptions, live stock, and material mix at a glance.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a class="btn" href="{% url 'sorting_center:reception_create' %}">+ New reception</a>
+            <a class="pill" href="{% url 'sorting_center:stock_create' %}">Add stock entry</a>
+            <a class="pill" href="{% url 'sorting_center:reception_history' %}">Reception history</a>
+        </div>
+    </div>
+</section>
+
+<section class="card" style="display:grid;grid-template-columns:1.15fr 1fr;gap:14px;">
+    <div>
+        <h3 style="margin-top:0;">Current stock table</h3>
+        <div style="overflow:auto;">
+            <table style="width:100%;border-collapse:collapse;min-width:760px;">
+                <thead>
+                    <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                        <th style="padding:10px 8px;">Center</th>
+                        <th style="padding:10px 8px;">Material</th>
+                        <th style="padding:10px 8px;">Grade</th>
+                        <th style="padding:10px 8px;">Qty</th>
+                        <th style="padding:10px 8px;">Threshold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in stocks %}
+                        <tr style="border-bottom:1px solid #eef4f0;">
+                            <td style="padding:10px 8px;">{{ stock.sorting_center.name }}</td>
+                            <td style="padding:10px 8px;">{{ stock.get_material_category_display }}</td>
+                            <td style="padding:10px 8px;">{{ stock.get_quality_grade_display }}</td>
+                            <td style="padding:10px 8px;">{{ stock.quantity_kg }} kg</td>
+                            <td style="padding:10px 8px;">{{ stock.low_stock_threshold_kg }} kg</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="5" class="muted" style="padding:12px;">No stock entries yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
+        <h3 style="margin-top:0;">Material mix</h3>
+        <canvas id="stockChart" height="260"></canvas>
+    </div>
+</section>
+
+<script>
+    const stockData = {{ chart_data_json|safe }};
+    const ctx = document.getElementById("stockChart");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: stockData.map(item => item.material_category),
+            datasets: [{
+                label: "Total kg",
+                data: stockData.map(item => Number(item.total || 0)),
+                backgroundColor: ["#137547","#248c5e","#1f6f8b","#d2872c","#926b2d","#63814d","#7b5bb7"]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+{% endblock %}
