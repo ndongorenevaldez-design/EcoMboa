@@ -45,6 +45,9 @@ class MaterialStock(models.Model):
 
 
 class DeliveryReception(models.Model):
+    MATERIAL_CATEGORIES = MaterialStock.MATERIAL_CATEGORIES
+    QUALITY_GRADES = MaterialStock.QUALITY_GRADES
+
     sorting_center = models.ForeignKey(
         SortingCenter, on_delete=models.CASCADE, related_name="receptions"
     )
@@ -70,6 +73,8 @@ class DeliveryReception(models.Model):
         related_name="delivery_receptions",
     )
     received_weight_kg = models.DecimalField(max_digits=12, decimal_places=2)
+    material_category = models.CharField(max_length=20, choices=MATERIAL_CATEGORIES)
+    quality_grade = models.CharField(max_length=1, choices=QUALITY_GRADES)
     confirmation_photo = models.ImageField(upload_to="sorting_center/receptions/", blank=True)
     lot_qr_code = models.CharField(max_length=120, blank=True)
     notes = models.TextField(blank=True)
