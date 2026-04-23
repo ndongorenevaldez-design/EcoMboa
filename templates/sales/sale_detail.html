@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Sale #{{ sale.pk }} | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Sale #{{ sale.pk }}</h1>
+            <p class="muted" style="margin:.35rem 0 0;">{{ sale.buyer.company_name }} • {{ sale.sorting_center.name }} • {{ sale.get_status_display }}</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            {% if sale.invoice_pdf %}<a class="pill" href="{{ sale.invoice_pdf.url }}" target="_blank" rel="noopener">Invoice PDF</a>{% endif %}
+            {% if sale.recycling_certificate_pdf %}<a class="pill" href="{{ sale.recycling_certificate_pdf.url }}" target="_blank" rel="noopener">Certificate PDF</a>{% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <p><strong>Due date:</strong> {{ sale.due_date|default:"-" }}</p>
+    <p><strong>Total amount:</strong> {{ sale.total_amount }} FCFA</p>
+    <p><strong>Notes:</strong><br>{{ sale.notes|default:"-" }}</p>
+    <h3>Lines</h3>
+    <div style="overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:760px;">
+            <thead>
+                <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                    <th style="padding:10px 8px;">Material</th>
+                    <th style="padding:10px 8px;">Grade</th>
+                    <th style="padding:10px 8px;">Qty</th>
+                    <th style="padding:10px 8px;">Unit price</th>
+                    <th style="padding:10px 8px;">Line total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line in sale.lines.all %}
+                    <tr style="border-bottom:1px solid #eef4f0;">
+                        <td style="padding:10px 8px;">{{ line.get_material_category_display }}</td>
+                        <td style="padding:10px 8px;">{{ line.get_quality_grade_display }}</td>
+                        <td style="padding:10px 8px;">{{ line.quantity_kg }} kg</td>
+                        <td style="padding:10px 8px;">{{ line.unit_price }} FCFA</td>
+                        <td style="padding:10px 8px;">{{ line.line_total }} FCFA</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="muted" style="padding:12px;">No line items.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

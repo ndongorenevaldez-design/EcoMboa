@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Buyer Dashboard | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+        <div>
+            <h1 style="margin:0;">Buyer dashboard</h1>
+            <p class="muted" style="margin:.35rem 0 0;">Browse available materials and manage purchase requests.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a class="pill" href="{% url 'buyers:profile' %}">Edit profile</a>
+            <a class="pill" href="{% url 'buyers:catalog' %}">Open catalog</a>
+            <a class="btn" href="{% url 'buyer_sales:create' %}">Create order request</a>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    {% if profile %}
+        <p><strong>Company:</strong> {{ profile.company_name }}</p>
+        <p><strong>Trade register:</strong> {{ profile.trade_register_number }}</p>
+        <p><strong>Approval:</strong> {% if profile.is_approved %}<span class="pill">Approved</span>{% else %}<span class="pill">Pending</span>{% endif %}</p>
+    {% else %}
+        <p class="muted">No buyer profile yet.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h3 style="margin-top:0;">Recent sale requests</h3>
+    <div style="overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:820px;">
+            <thead>
+                <tr style="text-align:left;border-bottom:1px solid #d4e5db;">
+                    <th style="padding:10px 8px;">Sale</th>
+                    <th style="padding:10px 8px;">Center</th>
+                    <th style="padding:10px 8px;">Status</th>
+                    <th style="padding:10px 8px;">Total</th>
+                    <th style="padding:10px 8px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                    <tr style="border-bottom:1px solid #eef4f0;">
+                        <td style="padding:10px 8px;">#{{ sale.pk }}</td>
+                        <td style="padding:10px 8px;">{{ sale.sorting_center.name }}</td>
+                        <td style="padding:10px 8px;">{{ sale.get_status_display }}</td>
+                        <td style="padding:10px 8px;">{{ sale.total_amount }} FCFA</td>
+                        <td style="padding:10px 8px;"><a class="pill" href="{% url 'buyer_sales:detail' sale.pk %}">Open</a></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="muted" style="padding:12px;">No sale requests yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

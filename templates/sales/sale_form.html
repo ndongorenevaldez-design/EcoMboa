@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}New Sale | EcoMboa{% endblock %}
+{% block content %}
+<section class="card">
+    <h1 style="margin-top:0;">Create sale / order request</h1>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for field in form %}
+            <div>
+                <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+
+        <h3 style="margin:.4rem 0 0;">Sale lines</h3>
+        {% for line_form in formset %}
+            <div style="border:1px solid #dceadf;border-radius:14px;padding:12px;background:#fbfffd;">
+                {% for hidden in line_form.hidden_fields %}{{ hidden }}{% endfor %}
+                {% for field in line_form.visible_fields %}
+                    <div style="margin-bottom:10px;">
+                        <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" type="submit">Save sale</button>
+            <a class="pill" href="{% url 'sales:index' %}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

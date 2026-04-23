@@ -31,9 +31,11 @@ urlpatterns = [
 
     # ── Sorting Center Space ──────────────────────────────────────────────────
     path('center/', include('apps.sorting_center.urls', namespace='sorting_center')),
+    path('center/sales/', include('apps.sales.urls', namespace='sales')),
 
     # ── Industrial Buyer Space ────────────────────────────────────────────────
     path('buyer/', include('apps.buyers.urls', namespace='buyers')),
+    path('buyer/orders/', include('apps.sales.urls', namespace='buyer_sales')),
 
     # ── Partner Company Space ─────────────────────────────────────────────────
     path('partner/', include('apps.partners.urls', namespace='partners')),
