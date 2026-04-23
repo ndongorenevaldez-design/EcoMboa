@@ -1,9 +1,11 @@
-from django.http import HttpResponse
 from django.urls import path
+
+from . import views
 
 app_name = "finances"
 
 urlpatterns = [
-    path("", lambda request: HttpResponse("Finances placeholder."), name="index"),
+    path("", views.finance_dashboard, name="index"),
+    path("export/", views.export_budget_excel, name="export"),
 ]
 

@@ -46,6 +46,7 @@ urlpatterns = [
     path('admin-eco/collection-points/', include('apps.collection_points.urls', namespace='collection_points')),
     path('admin-eco/reports/', include('apps.reports.admin_urls', namespace='reports_admin')),
     path('admin-eco/suppliers/', include('apps.suppliers.admin_urls', namespace='suppliers_admin')),
+    path('admin-eco/partners/', include('apps.partners.admin_urls', namespace='partners_admin')),
 
     # ── Accounts (profile, redirect) ──────────────────────────────────────────
     path('accounts/', include('apps.accounts.urls', namespace='accounts')),
